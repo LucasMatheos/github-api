@@ -1,7 +1,9 @@
+import useGitHub from "../../Hooks/GitHubHooks";
 import { Header } from "../Header";
 import { WrapperLayout } from "./styled";
 
 export function Layout({ children }) {
+  
   return (
     <WrapperLayout>
       <Header />

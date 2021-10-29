@@ -2,6 +2,7 @@ import { createContext, useCallback, useState } from "react";
 import { api } from "../services/api";
 
 export const GitHubContext = createContext({
+  hasUser: false,
   loading: false,
   user: {},
   repositories: [],
@@ -10,8 +11,10 @@ export const GitHubContext = createContext({
 
 export function GitHubProvider({ children }) {
   const [GitHubState, setGitHubState] = useState({
+    hasUser: false,
     loading: false,
     user: {
+      id: undefined,
       login: undefined,
       name: undefined,
       html_url: undefined,
@@ -29,9 +32,13 @@ export function GitHubProvider({ children }) {
   });
 
   const getUser = (username) => {
-    api.get(`/users/${username}`).then((response) =>
-      setGitHubState({
+    api.get(`/users/${username}`).then((response) => {
+      setGitHubState((prevState) => ({
+        ...prevState,
+        loading: true,
+        hasUser: true,
         user: {
+          id: response.data.id,
           login: response.data.login,
           name: response.data.name,
           html_url: response.data.html_url,
@@ -44,14 +51,23 @@ export function GitHubProvider({ children }) {
           public_repos: response.data.public_repos,
           avatar_url: response.data.avatar_url,
         },
-      })
-    );
-    console.log(GitHubState);
+      }));
+    });
+  };
+
+  const getUserRepositories = () => {
+    api.get(`/users/${GitHubState.user.login}/repos`).then(({ data }) => {
+      setGitHubState((prevState) => ({
+        ...prevState,
+        repositories: data,
+      }));
+    });
   };
 
   const contextValue = {
     GitHubState,
     getUser: useCallback((username) => getUser(username), []),
+    getUserRepositories: useCallback(() => getUserRepositories(), []),
   };
 
   return (
