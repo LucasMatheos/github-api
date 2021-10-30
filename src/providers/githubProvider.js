@@ -55,8 +55,8 @@ export function GitHubProvider({ children }) {
     });
   };
 
-  const getUserRepositories = () => {
-    api.get(`/users/${GitHubState.user.login}/repos`).then(({ data }) => {
+  const getUserRepositories = (username) => {
+    api.get(`/users/${username}/repos`).then(({ data }) => {
       setGitHubState((prevState) => ({
         ...prevState,
         repositories: data,
@@ -64,10 +64,26 @@ export function GitHubProvider({ children }) {
     });
   };
 
+  const getUserRepositoriesStarred = (username) => {
+    api.get(`/users/${username}/starred`).then(({ data }) => {
+      setGitHubState((prevState) => ({
+        ...prevState,
+        starred: data,
+      }));
+    });
+  };
+
   const contextValue = {
     GitHubState,
     getUser: useCallback((username) => getUser(username), []),
-    getUserRepositories: useCallback(() => getUserRepositories(), []),
+    getUserRepositories: useCallback(
+      (username) => getUserRepositories(username),
+      []
+    ),
+    getUserRepositoriesStarred: useCallback(
+      (username) => getUserRepositoriesStarred(username),
+      []
+    ),
   };
 
   return (

@@ -1,10 +1,13 @@
+import { Wrapper, WrapperTitle, WrapperFullName, WrapperLink } from "./styled";
+
 export function RepositoryItems({ name, linkRepo, fullName }) {
   return (
-    <div>
-      <h2>{name}</h2>
-      <a href={linkRepo} target="_blank" rel="noreferrer">
+    <Wrapper>
+      <WrapperTitle>{name}</WrapperTitle>
+      <WrapperFullName>Full name:</WrapperFullName>
+      <WrapperLink href={linkRepo} target="_blank" rel="noreferrer">
         {fullName}
-      </a>
-    </div>
+      </WrapperLink>
+    </Wrapper>
   );
 }

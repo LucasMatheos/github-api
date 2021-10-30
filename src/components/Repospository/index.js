@@ -6,15 +6,18 @@ import {
   WrapperTabList,
   WrapperTabs,
   WrapperTabPanel,
+  WrapperList,
 } from "./styled";
 
 export function Repository() {
-  const { GitHubState, getUserRepositories } = useGitHub();
+  const { GitHubState, getUserRepositories, getUserRepositoriesStarred } =
+    useGitHub();
   const [hasUserForSearchRepositories, setHasUserForSearchRepositories] =
     useState(false);
   useEffect(() => {
     if (!!GitHubState.user.login) {
-      getUserRepositories(!!GitHubState.repositories);
+      getUserRepositories(GitHubState.user.login);
+      getUserRepositoriesStarred(GitHubState.user.login);
       setHasUserForSearchRepositories(true);
     }
   }, [GitHubState.user.login]);
@@ -31,24 +34,28 @@ export function Repository() {
             <WrapperTab>Starred</WrapperTab>
           </WrapperTabList>
           <WrapperTabPanel>
-            {GitHubState.repositories.map((item) => (
-              <RepositoryItems
-                key={item.id}
-                name={item.name}
-                linkRepo={item.html_url}
-                fullName={item.full_name}
-              />
-            ))}
+            <WrapperList>
+              {GitHubState.repositories.map((item) => (
+                <RepositoryItems
+                  key={item.id}
+                  name={item.name}
+                  linkRepo={item.html_url}
+                  fullName={item.full_name}
+                />
+              ))}
+            </WrapperList>
           </WrapperTabPanel>
           <WrapperTabPanel>
-            {GitHubState.repositories.map((item) => (
-              <RepositoryItems
-                key={item.id}
-                name={item.name}
-                linkRepo={item.html_url}
-                fullName={item.full_name}
-              />
-            ))}
+            <WrapperList>
+              {GitHubState.starred.map((item) => (
+                <RepositoryItems
+                  key={item.id}
+                  name={item.name}
+                  linkRepo={item.html_url}
+                  fullName={item.full_name}
+                />
+              ))}
+            </WrapperList>
           </WrapperTabPanel>
         </WrapperTabs>
       ) : (
